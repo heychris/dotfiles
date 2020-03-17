@@ -1,4 +1,154 @@
-syntax on
+" ----------------------------------------------------------------------
+" | General Settings                                                   |
+" ----------------------------------------------------------------------
 
-" Wrap gitcommit file types at the appropriate length
-filetype indent plugin on
+set nocompatible                    " Don't make Vim vi-compatible.
+
+syntax on                           " Enable syntax highlighting.
+
+if has('autocmd')
+    filetype plugin indent on
+    "           │     │    └──────── Enable file type detection.
+    "           │     └───────────── Enable loading of indent file.
+    "           └─────────────────── Enable loading of plugin files.
+endif
+
+set autoindent                      " Copy indent to the new line.
+
+set backspace=indent                " ┐
+set backspace+=eol                  " │ Allow `backspace`
+set backspace+=start                " ┘ in insert mode.
+
+set clipboard=unnamed               " ┐
+                                    " │ Use the system clipboard
+if has('unnamedplus')               " │ as the default register.
+    set clipboard+=unnamedplus      " │
+endif                               " ┘
+
+set encoding=utf-8 nobomb           " Use UTF-8 without BOM.
+
+set laststatus=2                    " Always show the status line.
+
+set mousehide                       " Hide mouse pointer while typing.
+
+set nomodeline                      " Disable for security reasons.
+                                    " https://github.com/numirias/security/blob/cf4f74e0c6c6e4bbd6b59823aa1b85fa913e26eb/doc/2019-06-04_ace-vim-neovim.md
+
+set nostartofline                   " Kept the cusor on the same column.
+set number                          " Show line number.
+
+if has('linebreak')
+	set numberwidth=5           " Increase the minimal number of columns used for the line number.
+endif
+
+if has('cmdline_info')
+	set ruler                   " Show cursor position
+	set showcmd                 " Show the command being typed.
+endif
+
+set scrolloff=5                     " When scrolling, keep the cursor 5 lines
+				    " below the top and 5 above the bottom of
+				    " the screen
+
+set shortmess=aAItW                 " Avoid all the hit-enter prompts.
+
+set showmode                        " Show current mode
+
+if has('syntax')
+	set spelllang=en_us         " Set the spellchecking language.
+	set synmaxcol=2500          " Limit syntax highlighting
+endif
+
+set ignorecase                      " Ignore case in search patterns.
+set smartcase                       " Overrid `ignorecase` if uppercase chars are used
+
+set tabstop=4                       " 
+set softtabstop=4                   " Set global <TAB> settings.
+set shiftwidth=4                    " 
+set expandtab                       " 
+
+set ttyfast                         " Enable fast terminal connections
+
+set visualbell                      " Disable beeping and window flashing
+set noerrorbells                    " Disable error bells.
+set t_vb=                           " 
+
+" ----------------------------------------------------------------------
+" | Helper Functions                                                   |
+" ----------------------------------------------------------------------
+
+function! GetGitBranchName()
+
+    let branchName = ""
+
+    if exists("g:loaded_fugitive")
+        let branchName = "[" . fugitive#head() . "]"
+    endif
+
+    return branchName
+
+endfunction
+
+" ----------------------------------------------------------------------
+" | Status Line                                                        |
+" ----------------------------------------------------------------------
+
+" Terminal types:
+"
+"   1) term  (normal terminals, e.g.: vt100, xterm)
+"   2) cterm (color terminals, e.g.: MS-DOS console, color-xterm)
+"   3) gui   (GUIs)
+
+highlight ColorColumn
+    \ term=NONE
+    \ cterm=NONE  ctermbg=237    ctermfg=NONE
+    \ gui=NONE    guibg=#073642  guifg=NONE
+
+highlight CursorLine
+    \ term=NONE
+    \ cterm=NONE  ctermbg=235  ctermfg=NONE
+    \ gui=NONE    guibg=#073642  guifg=NONE
+
+highlight CursorLineNr
+    \ term=bold
+    \ cterm=bold  ctermbg=NONE   ctermfg=178
+    \ gui=bold    guibg=#073642  guifg=Orange
+
+highlight LineNr
+    \ term=NONE
+    \ cterm=NONE  ctermfg=241    ctermbg=NONE
+    \ gui=NONE    guifg=#839497  guibg=#073642
+
+highlight User1
+    \ term=NONE
+    \ cterm=NONE  ctermbg=237    ctermfg=Grey
+    \ gui=NONE    guibg=#073642  guifg=#839496
+
+" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+set statusline=
+set statusline+=%1*            " User1 highlight
+set statusline+=\ [%n]         " Buffer number
+set statusline+=\ %{GetGitBranchName()}        " Git branch name
+set statusline+=\ [%f]         " File path
+set statusline+=%m             " Modified flag
+set statusline+=%r             " Readonly flag
+set statusline+=%h             " Help file flag
+set statusline+=%w             " Preview window flag
+set statusline+=%y             " File type
+set statusline+=[
+set statusline+=%{&ff}         " File format
+set statusline+=:
+set statusline+=%{strlen(&fenc)?&fenc:'none'}  " File encoding
+set statusline+=]
+set statusline+=%=             " Left/Right separator
+set statusline+=%c             " File encoding
+set statusline+=,
+set statusline+=%l             " Current line number
+set statusline+=/
+set statusline+=%L             " Total number of lines
+set statusline+=\ (%P)\        " Percent through file
+
+" Example result:
+"
+"  [1] [master] [vim/vimrc][vim][unix:utf-8]            17,238/381 (59%)
