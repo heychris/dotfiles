@@ -22,10 +22,6 @@ chflags nohidden ~/Library
 # Set a really fast key repeat.
 defaults write NSGlobalDomain KeyRepeat -int 1
 
-# Run the screensaver if we're in the bottom-left hot corner and holding the CMD key.
-# defaults write com.apple.dock wvous-bl-corner -int 5
-# defaults write com.apple.dock wvous-bl-modifier -int 1048576
-
 # Set up Safari for development.
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
